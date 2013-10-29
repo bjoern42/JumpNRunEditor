@@ -1,0 +1,17 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                   controllers.Editor.index()
+POST        /upload             controllers.Editor.upload()
+GET         /show/:index        controllers.Editor.show(index:Int)
+GET         /new_level          controllers.Editor.new_level()
+
+#Used GET to be able to control it from the browsers address bar
+GET         /changeBlockType    controllers.Editor.changeBlockType(x:Int,y:Int,block_type:Int)
+GET         /changeToolType     controllers.Editor.changeToolType(tool_type:Int)
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file       controllers.Assets.at(path="/public", file)

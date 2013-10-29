@@ -1,0 +1,28 @@
+@main("Level Editor") {
+
+    <div>
+        <form action="@{routes.Editor.new_level()}">
+            <p>
+                <input type="submit" value="Create new Level">
+            </p>
+        </form>
+
+        <button type="button" onclick="showUploadLevel()">Upload Level</button>
+        <div id="uploadLevel" style="display: none">
+            <form action="@{routes.Editor.upload}" method="POST" enctype="multipart/form-data" style="display: inline-table">
+                <input type="file" name="level">
+
+                <br>
+                <p>
+                    <input type="submit">
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function showUploadLevel(){
+            $('#uploadLevel' ).fadeIn("slow");
+        }
+    </script>
+}

@@ -1,0 +1,65 @@
+@(map: java.util.List[Array[models.BlockButtonInterface]])(height:Integer)(index:Integer)
+
+@main("Level Editor") {
+    <div>
+        <form action="@{routes.Editor.show(index-1)}" style="display: inline-table">
+            <input class="navigation_button" type="submit" value="<">
+        </form>
+
+        <table style="display: inline-table">
+            @for( i <- 0 to height -1){
+                <tr>
+                    @for( j <- 0 to map.size -1){
+                        <td>
+                            <button type="button" class="block type_@map.get(j)(i).getType()" id="block_@{j}_@{i}" onclick="changeBlockType(@{j},@{i})">@map.get(j)(i).getType()</button>
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+        <form action="@{routes.Editor.show(index+1)}" style="display: inline-table">
+            <input class="navigation_button" type="submit" value=">">
+        </form>
+    </div>
+    <p/>
+    <div>
+        <span>
+            @for( i <- 0 to 8){
+                <button type="button" class="type_@{i} tool" onclick="changeToolType(@{i})">@{i}</button>
+            }
+        </span>
+    </div>
+
+    <script type="text/javascript">
+        var tool_type = @{session().get("tool_type")};
+        function changeBlockType(x,y){
+            var button = $('#block_'+x+'_'+y );
+            x = @{index} + x;
+            $.ajax({
+                url: '/changeBlockType',
+                data: {
+                    x: x,
+                    y: y,
+                    block_type: tool_type
+                },
+                success: function(data) {
+                    button.html(data);
+                    button.attr("class", "block type_"+data)
+                }
+            });
+        }
+
+        function changeToolType(type){
+            $.ajax({
+                url: '/changeToolType',
+                data: {
+                    tool_type: type
+                },
+                success: function(data) {
+                    tool_type = data;
+                    alert("tool_type changed to "+tool_type);
+                }
+            });
+        }
+    </script>
+}
