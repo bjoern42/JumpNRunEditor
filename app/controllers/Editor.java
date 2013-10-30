@@ -60,7 +60,7 @@ public class Editor extends Controller {
         if(pIndex < 0){
             pIndex = 0;
         }
-        Logger.debug("index "+pIndex);
+        //Logger.debug("index "+pIndex);
         if(pIndex+WIDTH > map.size()-1){
             pIndex = map.size()-WIDTH;
         }

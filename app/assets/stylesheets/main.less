@@ -1,0 +1,94 @@
+@image_type_0:delete.png;
+@image_type_1:gras.jpg;
+@image_type_2:enemy.gif;
+@image_type_3:water.png;
+@image_type_4:coin.png;
+@image_type_5:goal.png;
+@image_type_6:crate.png;
+@image_type_7:buttonReleased.png;
+@image_type_8:gateClosed.png;
+
+@image_background:editorbg.png;
+
+@block_size:50px;
+@toolbox_block_size:50px;
+@opacity:0.2;
+
+body{
+  text-align: center;
+}
+
+#toolbox{
+  display: inline;
+
+}
+
+#map{
+    border: 3px solid black;
+    background-image: url("../images/@{image_background}");
+    background-size: cover;
+}
+
+.block{
+    width:@block_size;
+    height:@block_size;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.tool{
+    display: inline;
+    width:@toolbox_block_size;
+    height:@toolbox_block_size;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: 2px solid black;
+}
+
+#tool_indicator{
+    display: inline;
+    width: 200px;
+    height: @toolbox_block_size;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.type_0:not(.tool){
+    opacity:@opacity;
+}
+
+.type_0.tool{
+    background-image: url("../images/@{image_type_0}");
+}
+
+.type_1{
+    background-image: url("../images/@{image_type_1}");
+}
+
+.type_2{
+    background-image: url("../images/@{image_type_2}");
+}
+
+.type_3{
+    background-image: url("../images/@{image_type_3}");
+}
+
+.type_4{
+    background-image: url("../images/@{image_type_4}");
+}
+
+.type_5{
+    background-image: url("../images/@{image_type_5}");
+}
+
+.type_6{
+    background-image: url("../images/@{image_type_6}");
+}
+
+.type_7{
+    background-image: url("../images/@{image_type_7}");
+}
+
+.type_8{
+    background-image: url("../images/@{image_type_8}");
+}
