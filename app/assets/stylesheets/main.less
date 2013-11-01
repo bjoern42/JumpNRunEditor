@@ -19,8 +19,8 @@ body{
 }
 
 #toolbox{
-  display: inline;
-
+  display: inline-block;
+  vertical-align: middle;
 }
 
 #map{
@@ -46,11 +46,21 @@ body{
 }
 
 #tool_indicator{
-    display: inline;
-    width: 200px;
+    margin-right: 15px;
+    display: inline-block;
+    vertical-align: middle;
+    width: @toolbox_block_size;
     height: @toolbox_block_size;
     background-size: cover;
     background-repeat: no-repeat;
+    border: 5px solid black;
+}
+
+#menu{
+    margin-left: 15px;
+    display: inline-block;
+    vertical-align: middle;
+    border: 2px solid black;
 }
 
 .type_0:not(.tool){

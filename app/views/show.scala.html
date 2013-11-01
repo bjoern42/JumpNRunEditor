@@ -1,40 +1,10 @@
 @(map: java.util.List[Array[models.BlockButtonInterface]])(height:Integer)(index:Integer)
 
-@main("Level Editor") {
-    <div>
-        <div>
-            <form action="@{routes.Editor.show(index-1)}" style="display: inline-table">
-                <input class="navigation_button" type="submit" value="<">
-            </form>
-
-            <table id="map" style="display: inline-table">
-                @for( i <- 0 to height -1){
-                    <tr>
-                        @for( j <- 0 to map.size -1){
-                            <td>
-                                <button type="button" class="block type_@map.get(j)(i).getType()" id="block_@{j}_@{i}" onclick="changeBlockType(@{j},@{i})">@map.get(j)(i).getType()</button>
-                            </td>
-                        }
-                    </tr>
-                }
-            </table>
-            <form action="@{routes.Editor.show(index+1)}" style="display: inline-table">
-                <input class="navigation_button" type="submit" value=">">
-            </form>
-        </div>
-        <p/>
-        <div>
-            <!-- <span id="tool_indicator" class="tool type_0"/> -->
-            <span id="toolbox">
-                @for( i <- 0 to 8){
-                    <button type="button" class="type_@{i} tool" onclick="changeToolType(@{i})">@{i}</button>
-                }
-            </span>
-        </div>
-    </div>
-
+@scripts = {
     <script type="text/javascript">
         var tool_type = @{session().get("tool_type")};
+        var index = @{index};
+
         function changeBlockType(x,y){
             var button = $('#block_'+x+'_'+y );
             x = @{index} + x;
@@ -64,5 +34,101 @@
                 }
             });
         }
+
+        function addColumns(){
+            var dialog = createInputDialog("Add", "How many columns should be added?");
+            dialog.dialog({
+                resizable: false,
+                modal: true,
+                buttons:{
+                    OK: function () {
+                        var amount = $('#amount' ).val();
+                        $.ajax({
+                            url: '/addColumns',
+                            data: {
+                                amount: amount
+                            },
+                            success: function(data) {
+
+                            }
+                        });
+                        $(this).dialog("close");
+                        $(this ).remove();
+                    }
+                }
+            });
+        }
+
+        function removeColumns(){
+            var dialog = createInputDialog("Remove", "How many columns should be removed?");
+            dialog.dialog({
+                resizable: false,
+                modal: true,
+                buttons:{
+                    OK: function () {
+                        var amount = $('#amount' ).val();
+                        $.ajax({
+                            url: '/removeColumns',
+                            data: {
+                                amount: amount
+                            },
+                            success: function(data) {
+                                if (data-15 < index) {
+                                    location.reload();
+                                }
+                            }
+                        });
+                        $(this).dialog("close");
+                        $(this ).remove();
+                    }
+                }
+            });
+        }
+
+        function createInputDialog(title, message){
+            var dialog = $('<div data-role="dialog" id="input_dialog" title="'+title+'"><label for="amount">'+message+'</label><input type="text" id="amount"></div>');
+            return dialog;
+        }
+
     </script>
+}
+@main("Level Editor", scripts) {
+    <div>
+        <div>
+            <form action="@{routes.Editor.show(index-1)}" style="display: inline-table">
+                <input class="navigation_button" type="submit" value="<">
+            </form>
+
+            <table id="map" style="display: inline-table">
+                @for( i <- 0 to height -1){
+                    <tr>
+                        @for( j <- 0 to map.size -1){
+                            <td>
+                                <button type="button" class="block type_@map.get(j)(i).getType()" id="block_@{j}_@{i}" onclick="changeBlockType(@{j},@{i})">@map.get(j)(i).getType()</button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+            <form action="@{routes.Editor.show(index+1)}" style="display: inline-table">
+                <input class="navigation_button" type="submit" value=">">
+            </form>
+        </div>
+        <p/>
+        <div>
+            <div id="tool_indicator" class="tool type_@{session().get("tool_type")}"></div>
+            <div id="toolbox">
+                @for( i <- 0 to 8){
+                    <button type="button" class="type_@{i} tool" onclick="changeToolType(@{i})">@{i}</button>
+                }
+            </div>
+            <div id="menu">
+                <button type="button" class="menu" id="add_column" onclick="addColumns()">+</button>
+                <button type="button" class="menu" id="save" onclick="save()">save</button>
+                <br>
+                <button type="button" class="menu" id="remove_column" onclick="removeColumns()">-</button>
+                <button type="button" class="menu" id="load" onclick="load()">load</button>
+            </div>
+        </div>
+    </div>
 }

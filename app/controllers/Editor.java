@@ -80,6 +80,28 @@ public class Editor extends Controller {
         return ok(""+type);
     }
 
+    public static Result addColumns(int amount){
+        List<BlockButtonInterface[]> map = (List)Cache.get("map");
+        for(int i=0; i<amount; i++){
+            BlockButtonInterface[] column = new BlockButtonInterface[HEIGHT];
+            for(int j=0; j<HEIGHT; j++){
+                column[j] = new BlockButton(BlockInterface.TYP_AIR);
+            }
+            map.add(column);
+        }
+        return ok(String.valueOf(map.size()));
+    }
+
+    public static Result removeColumns(int amount){
+        List<BlockButtonInterface[]> map = (List)Cache.get("map");
+        for(int i=0; i<amount; i++){
+            if(map.size() > WIDTH){
+                map.remove(map.size()-1);
+            }
+        }
+        return ok(String.valueOf(map.size()));
+    }
+
     private static List<BlockButtonInterface[]> loadMap(File pLevel){
         List<BlockButtonInterface[]> objects = new LinkedList<BlockButtonInterface[]>();
         LevelLoaderInterface levelLoader = new LevelLoader();
