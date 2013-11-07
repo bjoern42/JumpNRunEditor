@@ -93,6 +93,7 @@
     </script>
 }
 @main("Level Editor", scripts) {
+
     <div>
         <div>
             <form action="@{routes.Editor.show(index-1)}" style="display: inline-table">
@@ -124,10 +125,7 @@
             </div>
             <div id="menu">
                 <button type="button" class="menu" id="add_column" onclick="addColumns()">+</button>
-                <button type="button" class="menu" id="save" onclick="save()">save</button>
-                <br>
                 <button type="button" class="menu" id="remove_column" onclick="removeColumns()">-</button>
-                <button type="button" class="menu" id="load" onclick="load()">load</button>
             </div>
         </div>
     </div>
