@@ -3,7 +3,7 @@ package models.implementation;
 import models.BlockButtonInterface;
 
 public class BlockButton implements BlockButtonInterface{
-	private int index, type;
+	private int index=-1, type;
 	
 	public BlockButton(int pType){
 		type = pType;

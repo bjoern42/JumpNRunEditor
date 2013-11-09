@@ -1,6 +1,9 @@
 package controllers;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -53,6 +56,19 @@ public class Editor extends Controller {
         }
         return redirect(routes.Editor.index());
     }
+
+    public static Result download(){
+        List<BlockButtonInterface[]> map = (List)Cache.get("map");
+        try{
+            File file = saveMap(map);
+            response().setContentType("application/x-download");
+            response().setHeader("Content-disposition","attachment; filename="+file.getName());
+            return ok(file);
+        }catch(IOException e){
+            return ok("failure");
+        }
+    }
+
 
     public static Result show(int pIndex){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
@@ -124,6 +140,27 @@ public class Editor extends Controller {
         HEIGHT = objects.get(0).length;
         //Logger.debug("height = "+HEIGHT);
         return objects;
+    }
+
+    private static File saveMap(List<BlockButtonInterface[]> map) throws IOException {
+        File file = File.createTempFile("map", ".lvl");
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+        for(BlockButtonInterface[] line:map){
+            for(int i=0; i<line.length; i++){
+                BlockButtonInterface blockButton = line[i];
+                writer.write(""+blockButton.getType());
+                if(blockButton.getIndex() != -1){
+                    writer.write(","+blockButton.getIndex());
+                }
+                if(i+1<line.length){
+                    writer.write(",");
+                }
+            }
+            writer.newLine();
+            writer.flush();
+        }
+        return file;
     }
 
     private static void logMap(List<BlockButtonInterface[]> map){
