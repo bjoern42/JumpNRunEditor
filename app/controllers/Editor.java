@@ -24,10 +24,6 @@ import de.htwg.project42.model.GameObjects.Implementation.LevelLoader;
 public class Editor extends Controller {
     public static int WIDTH = 15, HEIGHT = 10, INDEX_OFFSET = 100;
 
-    public static Result index() {
-        return ok(views.html.index.render());
-    }
-
     public static Result new_level(){
         LinkedList<BlockButtonInterface[]> map = new LinkedList<BlockButtonInterface[]>();
         for(int i=0; i<WIDTH; i++){
@@ -39,7 +35,7 @@ public class Editor extends Controller {
         }
         Cache.set("map", map);
         session("tool_type", String.valueOf(0));
-        session("current_index", String.valueOf(0));
+        session("current_index", String.valueOf(INDEX_OFFSET));
         return redirect(routes.Editor.show(0));
     }
 
@@ -55,7 +51,7 @@ public class Editor extends Controller {
         }else{
             flash("error", "Missing file");
         }
-        return redirect(routes.Editor.index());
+        return redirect(routes.Editor.new_level());
     }
 
     public static Result download(){
@@ -79,7 +75,6 @@ public class Editor extends Controller {
         if(pIndex < 0){
             pIndex = 0;
         }
-        //Logger.debug("index "+pIndex);
         if(pIndex+WIDTH > map.size()-1){
             pIndex = map.size()-WIDTH;
         }
@@ -87,7 +82,6 @@ public class Editor extends Controller {
     }
 
     public static Result changeBlockType(int x, int y, int type){
-        //Logger.debug("changeBlockType called! x:"+x +" y:"+y+" type:"+type);
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         map.get(x)[y].setType(type);
         return ok(""+type);
@@ -114,7 +108,6 @@ public class Editor extends Controller {
     }
 
     public static Result changeToolType(int type){
-        //Logger.debug("changeToolType called! type:"+type);
         session("tool_type", String.valueOf(type));
         return ok(""+type);
     }
@@ -166,7 +159,6 @@ public class Editor extends Controller {
 
         session("current_index", String.valueOf(currentIndex));
         HEIGHT = objects.get(0).length;
-        //Logger.debug("height = "+HEIGHT);
         return objects;
     }
 
@@ -179,7 +171,7 @@ public class Editor extends Controller {
                 BlockButtonInterface blockButton = line[i];
                 writer.write(""+blockButton.getType());
                 if(blockButton.getIndex() != -1){
-                    writer.write(","+(blockButton.getIndex()+INDEX_OFFSET));
+                    writer.write(","+(blockButton.getIndex()));
                 }
                 if(i+1<line.length){
                     writer.write(",");

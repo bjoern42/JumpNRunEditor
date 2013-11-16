@@ -58,6 +58,7 @@
         function changeBlockType(x,y){
             var button = $('#block_'+x+'_'+y );
             if(tool_type == CONNECTOR){
+                x = index + x;
                 connectBlock(x,y,button);
             }else{
                 x = index + x;

@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET         /                                 controllers.Editor.index()
+GET         /                                 controllers.Application.index()
 POST        /upload                           controllers.Editor.upload()
 GET         /download                         controllers.Editor.download()
 GET         /show/:index                      controllers.Editor.show(index:Int)

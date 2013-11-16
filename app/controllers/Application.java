@@ -6,6 +6,10 @@ import play.mvc.*;
 
 public class Application extends Controller {
 
+    public static Result index() {
+        return redirect(controllers.routes.Editor.show(0));
+    }
+
     public static Result javascriptRoutes() {
         response().setContentType("text/javascript");
         return ok(

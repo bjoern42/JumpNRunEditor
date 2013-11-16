@@ -19,7 +19,18 @@ function newLevel(){
 }
 
 function uploadLevel(){
-
+    var dialog = createUploadDialog();
+    console.log(dialog);
+    dialog.dialog({
+        resizable: false,
+        modal: true,
+        buttons:{
+            CANCEL: function(){
+                $(this).dialog("close");
+                $(this ).remove();
+            }
+        }
+    });
 }
 
 function downloadLevel(){
@@ -29,5 +40,11 @@ function downloadLevel(){
 
 function createConfirmDialog(title, message){
     var dialog = $('<div data-role="dialog" id="confirm_dialog" title="'+title+'">'+message+'</div>');
+    return dialog;
+}
+
+function createUploadDialog(){
+    var action = jsRoutes.controllers.Editor.upload().url;
+    var dialog = $('<div data-role="dialog"><form action="'+action+'" method="POST" enctype="multipart/form-data"><input type="file" name="level"><br><p><input type="submit" value="upload"></p></form></div>');
     return dialog;
 }
