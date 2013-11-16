@@ -14,7 +14,10 @@ GET         /changeBlockType                  controllers.Editor.changeBlockType
 GET         /changeToolType                   controllers.Editor.changeToolType(tool_type:Int)
 GET         /addColumns                       controllers.Editor.addColumns(amount:Int)
 GET         /removeColumns                    controllers.Editor.removeColumns(amount:Int)
+GET         /getIndex                         controllers.Editor.getIndex(x:Int,y:Int)
+GET         /setIndex                         controllers.Editor.setIndex(x:Int,y:Int,index:Int)
 
+GET         /contact                          controllers.Application.contact()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/javascripts/routes        controllers.Application.javascriptRoutes()

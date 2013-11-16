@@ -22,14 +22,13 @@ import de.htwg.project42.model.GameObjects.LevelLoaderInterface;
 import de.htwg.project42.model.GameObjects.Implementation.LevelLoader;
 
 public class Editor extends Controller {
-    public static int WIDTH = 15, HEIGHT = 10;
+    public static int WIDTH = 15, HEIGHT = 10, INDEX_OFFSET = 100;
 
     public static Result index() {
         return ok(views.html.index.render());
     }
 
     public static Result new_level(){
-        session("tool_type", String.valueOf(0));
         LinkedList<BlockButtonInterface[]> map = new LinkedList<BlockButtonInterface[]>();
         for(int i=0; i<WIDTH; i++){
             BlockButtonInterface[] column = new BlockButtonInterface[HEIGHT];
@@ -39,6 +38,8 @@ public class Editor extends Controller {
             map.add(column);
         }
         Cache.set("map", map);
+        session("tool_type", String.valueOf(0));
+        session("current_index", String.valueOf(0));
         return redirect(routes.Editor.show(0));
     }
 
@@ -69,10 +70,12 @@ public class Editor extends Controller {
         }
     }
 
-
     public static Result show(int pIndex){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
 
+        if(map == null){
+            return redirect(routes.Editor.new_level());
+        }
         if(pIndex < 0){
             pIndex = 0;
         }
@@ -88,6 +91,26 @@ public class Editor extends Controller {
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         map.get(x)[y].setType(type);
         return ok(""+type);
+    }
+
+    public static Result getIndex(int x, int y){
+        List<BlockButtonInterface[]> map = (List)Cache.get("map");
+        int index = map.get(x)[y].getIndex();
+        if(index == -1 && map.get(x)[y].getType() == BlockInterface.TYP_BUTTON){
+            index = getNextFreeIndex(map);
+            map.get(x)[y].setIndex(index);
+        }
+        return ok(""+index);
+    }
+
+    public static Result setIndex(int x, int y, int index){
+        List<BlockButtonInterface[]> map = (List)Cache.get("map");
+        if(map.get(x)[y].getType() == BlockInterface.TYP_GATE){
+            map.get(x)[y].setIndex(index);
+            return ok(""+index);
+        }else{
+            return ok("failure");
+        }
     }
 
     public static Result changeToolType(int type){
@@ -123,6 +146,7 @@ public class Editor extends Controller {
         LevelLoaderInterface levelLoader = new LevelLoader();
         levelLoader.setInputFile(pLevel);
         int buffer[] = null;
+        int currentIndex = 0;
 
         while((buffer = levelLoader.readNext()) != null){
             List<BlockButtonInterface> column = new LinkedList<BlockButtonInterface>();
@@ -130,6 +154,9 @@ public class Editor extends Controller {
                 BlockButtonInterface block = new BlockButton(buffer[i]);
                 if(buffer[i] == BlockInterface.TYP_BUTTON || buffer[i] == BlockInterface.TYP_GATE){
                     block.setIndex(buffer[++i]);
+                    if(block.getIndex()>currentIndex){
+                        currentIndex = block.getIndex();
+                    }
                 }
                 column.add(block);
             }
@@ -137,6 +164,7 @@ public class Editor extends Controller {
             objects.add(column.toArray(new BlockButtonInterface[column.size()]));
         }
 
+        session("current_index", String.valueOf(currentIndex));
         HEIGHT = objects.get(0).length;
         //Logger.debug("height = "+HEIGHT);
         return objects;
@@ -151,7 +179,7 @@ public class Editor extends Controller {
                 BlockButtonInterface blockButton = line[i];
                 writer.write(""+blockButton.getType());
                 if(blockButton.getIndex() != -1){
-                    writer.write(","+blockButton.getIndex());
+                    writer.write(","+(blockButton.getIndex()+INDEX_OFFSET));
                 }
                 if(i+1<line.length){
                     writer.write(",");
@@ -169,5 +197,11 @@ public class Editor extends Controller {
                 Logger.debug("[" + b.getType() + "]");
             }
         }
+    }
+
+    private static int getNextFreeIndex(List<BlockButtonInterface[]> map){
+        int currentIndex = Integer.parseInt(session("current_index"));
+        session("current_index", String.valueOf(currentIndex+1));
+        return Integer.parseInt(session("current_index"));
     }
 }

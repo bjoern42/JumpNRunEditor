@@ -7,33 +7,56 @@
 @image_type_6:crate.png;
 @image_type_7:buttonReleased.png;
 @image_type_8:gateClosed.png;
+@connect:connect.png;
 
 @image_background:editorbg.png;
 
 @block_size:50px;
 @toolbox_block_size:50px;
-@opacity:0.2;
+@opacity:0.3;
+@hover_color: #efede4;
+@grid_color: #6d6d6d;
+@index_color: #00ff00;
 
 body{
-  text-align: center;
+    text-align: center;
+}
+
+#container{
+    margin-top: 5px;
 }
 
 #toolbox{
-  display: inline-block;
-  vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 #map{
+    vertical-align: top;
     border: 3px solid black;
     background-image: url("../images/@{image_background}");
     background-size: cover;
 }
 
 .block{
-    width:@block_size;
-    height:@block_size;
+    color: @index_color;
+    border: 1px solid @grid_color;
     background-size: cover;
     background-repeat: no-repeat;
+}
+
+.block:hover{
+    opacity:@opacity;
+}
+
+.block.type_0:hover{
+    background: @hover_color;
+}
+
+.navigation_button{
+    vertical-align: middle;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .tool{
@@ -101,4 +124,8 @@ body{
 
 .type_8{
     background-image: url("../images/@{image_type_8}");
+}
+
+.type_9{
+  background-image: url("../images/@{connect}");
 }

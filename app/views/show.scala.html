@@ -2,34 +2,87 @@
 
 @scripts = {
     <script type="text/javascript">
+        var CONNECTOR = 9;
+        var GATE = 8;
+        var BUTTON = 7;
+
         var tool_type = @{session().get("tool_type")};
         var index = @{index};
+        var block_index = -1;
+
+        var x1,y1;
+
+        $(function(){
+            respondToSize();
+            $(window).resize(function () {
+                respondToSize();
+            });
+
+            $('.type_'+GATE+":not(.tool)").mouseover(function(event){
+                draw($(this));
+            });
+        });
+
+        function draw(block){
+            if(block_index != -1){
+                x2 = block.offset().left+block.width()/2;
+                y2 = block.offset().top+block.height()/2;
+                drawLine(x1, y1, x2, y2);
+            }
+        }
+
+        function drawLine(x1, y1, x2, y2){
+            console.log("draw a line from "+x1+"/"+y1+" to "+x2+"/"+y2);
+        }
+
+        function connectBlock(x,y,block){
+            if(block.hasClass("type_"+BUTTON)){
+                jsRoutes.controllers.Editor.getIndex(x, y).ajax({
+                    success: function(data) {
+                        block_index = data;
+                        block.html(block_index);
+
+                        x1 = block.offset().left+block.width()/2;
+                        y1 = block.offset().top+block.height()/2;
+                    }
+                });
+            }else if(block_index != -1 && block.hasClass("type_"+GATE)){
+                jsRoutes.controllers.Editor.setIndex(x, y, block_index).ajax({
+                    success: function(data) {
+                        block.html(block_index);
+                    }
+                });
+            }
+        }
 
         function changeBlockType(x,y){
             var button = $('#block_'+x+'_'+y );
-            x = @{index} + x;
-            $.ajax({
-                url: '/changeBlockType',
-                data: {
-                    x: x,
-                    y: y,
-                    block_type: tool_type
-                },
-                success: function(data) {
-                    button.html(data);
-                    button.attr("class", "block type_"+data)
-                }
-            });
+            if(tool_type == CONNECTOR){
+                connectBlock(x,y,button);
+            }else{
+                x = index + x;
+                jsRoutes.controllers.Editor.changeBlockType(x, y, tool_type).ajax({
+                    success: function(data) {
+                        //button.html(data);
+                        var type = data;
+                        button.attr("class", "block type_"+type);
+                        block_index = -1;
+                        if(type == GATE){
+                            button.mouseover(function(event){
+                                draw($(this));
+                            });
+                        }
+                    }
+                });
+            }
+
         }
 
         function changeToolType(type){
-            $.ajax({
-                url: '/changeToolType',
-                data: {
-                    tool_type: type
-                },
+            jsRoutes.controllers.Editor.changeToolType(type).ajax({
                 success: function(data) {
                     tool_type = data;
+                    block_index = -1;
                     $('#tool_indicator' ).attr("class", "tool type_"+tool_type);
                 }
             });
@@ -43,11 +96,7 @@
                 buttons:{
                     OK: function () {
                         var amount = $('#amount' ).val();
-                        $.ajax({
-                            url: '/addColumns',
-                            data: {
-                                amount: amount
-                            },
+                        jsRoutes.controllers.Editor.addColumns(amount).ajax({
                             success: function(data) {
 
                             }
@@ -67,12 +116,8 @@
                 buttons:{
                     OK: function () {
                         var amount = $('#amount' ).val();
-                        $.ajax({
-                            url: '/removeColumns',
-                            data: {
-                                amount: amount
-                            },
-                            success: function(data) {
+                        jsRoutes.controllers.Editor.removeColumns(amount).ajax({
+                        success: function(data) {
                                 if (data-15 < index) {
                                     location.reload();
                                 }
@@ -90,6 +135,27 @@
             return dialog;
         }
 
+        function respondToSize(){
+            var width = $(window).width();
+            var height = $(window).height();
+
+            var block_width = (width * 3/4) / 15;
+            var block_height = (height * 3/4) / 10;
+
+            if(block_width < block_height){
+                block_height = block_width;
+            }else{
+                block_width = block_height;
+            }
+
+            $('.block' ).width(block_width);
+            $('.block' ).height(block_height);
+
+            $('#map' ).width(block_width * 15);
+            $('#map' ).height(block_height * 10);
+
+            $('.navigation_button' ).height($('#map' ).height()-20);
+        }
     </script>
 }
 @main("Level Editor", scripts) {
@@ -103,13 +169,15 @@
                 @for( i <- 0 to height -1){
                     <tr>
                         @for( j <- 0 to map.size -1){
-                            <td>
-                                <button type="button" class="block type_@map.get(j)(i).getType()" id="block_@{j}_@{i}" onclick="changeBlockType(@{j},@{i})">@map.get(j)(i).getType()</button>
+                            <td class="block type_@map.get(j)(i).getType()" id="block_@{j}_@{i}" onclick="changeBlockType(@{j},@{i})">
+                                <!--@map.get(j)(i).getType() -->
+                                @if(map.get(j)(i).getIndex() != -1){@map.get(j)(i).getIndex()}
                             </td>
                         }
                     </tr>
                 }
             </table>
+
             <form action="@{routes.Editor.show(index+1)}" style="display: inline-table">
                 <input class="navigation_button" type="submit" value=">">
             </form>
@@ -118,16 +186,15 @@
         <div>
             <div id="tool_indicator" class="tool type_@{session().get("tool_type")}"></div>
             <div id="toolbox">
-                @for( i <- 0 to 8){
-                    <button type="button" class="type_@{i} tool" onclick="changeToolType(@{i})">@{i}</button>
+                @for( i <- 0 to 9){
+                    <button type="button" class="type_@{i} tool" onclick="changeToolType(@{i})">
+                        <!--@{i}-->
+                    </button>
                 }
             </div>
             <div id="menu">
-                <button type="button" class="menu" id="add_column" onclick="addColumns()">+</button>
-                <button type="button" class="menu" id="save" onclick="save()">save</button>
-                <br>
                 <button type="button" class="menu" id="remove_column" onclick="removeColumns()">-</button>
-                <button type="button" class="menu" id="load" onclick="load()">load</button>
+                <button type="button" class="menu" id="add_column" onclick="addColumns()">+</button>
             </div>
         </div>
     </div>

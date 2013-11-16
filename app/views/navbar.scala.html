@@ -11,8 +11,8 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li @if(request.uri.startsWith("/show")) { class="active" }><a href="#">Editor</a></li>
-                <li @if(request.uri == "/contact") { class="active" }><a href="#contact">Contact</a></li>
+                <li @if(request.uri.startsWith("/show")) { class="active" }><a href="@routes.Editor.show(0)">Editor</a></li>
+                <li @if(request.uri == "/contact") { class="active" }><a href="@routes.Application.contact()">Contact</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
