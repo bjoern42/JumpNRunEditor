@@ -155,16 +155,22 @@
             $('#map' ).width(block_width * 15);
             $('#map' ).height(block_height * 10);
 
-            $('.navigation_button' ).height($('#map' ).height()-20);
+            $('.navigation_button' ).height(($('#map' ).height()-40)/2);
         }
     </script>
 }
 @main("Level Editor", scripts) {
     <div>
-        <div>
-            <form action="@{routes.Editor.show(index-1)}" style="display: inline-table">
-                <input class="navigation_button" type="submit" value="<">
-            </form>
+        <div class="row">
+            <div style="display: inline-table">
+                <form action="@{routes.Editor.show(index-1)}">
+                    <input class="navigation_button" type="submit" value="<">
+                </form>
+
+                <form action="@{routes.Editor.show(index-5)}">
+                    <input class="navigation_button" type="submit" value="<<">
+                </form>
+            </div>
 
             <table id="map" style="display: inline-table">
                 @for( i <- 0 to height -1){
@@ -179,12 +185,17 @@
                 }
             </table>
 
-            <form action="@{routes.Editor.show(index+1)}" style="display: inline-table">
-                <input class="navigation_button" type="submit" value=">">
-            </form>
+            <div style="display: inline-table">
+                <form action="@{routes.Editor.show(index+1)}">
+                    <input class="navigation_button" type="submit" value=">">
+                </form>
+                <form action="@{routes.Editor.show(index+5)}">
+                    <input class="navigation_button" type="submit" value=">>">
+                </form>
+            </div>
         </div>
         <p/>
-        <div>
+        <div class="row">
             <div id="tool_indicator" class="tool type_@{session().get("tool_type")}"></div>
             <div id="toolbox">
                 @for( i <- 0 to 9){
