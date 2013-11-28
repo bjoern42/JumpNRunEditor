@@ -12,6 +12,8 @@
 
         var x1,y1;
 
+        var websocket;
+
         $(function(){
             respondToSize();
             $(window).resize(function () {
@@ -21,7 +23,28 @@
             $('.type_'+GATE+":not(.tool)").mouseover(function(event){
                 draw($(this));
             });
+
+            var route = jsRoutes.controllers.Editor.establishWebSocket();
+            websocket = new WebSocket(route.webSocketURL());
+            websocket.onmessage = function(evt) {
+                webSocketOnMessage(JSON.parse(evt.data));
+            };
         });
+
+        function webSocketOnMessage(json){
+            var block = $('#block_'+json.x+'_'+json.y );
+            if(json.index > -1 && (json.type == GATE || json.type == BUTTON)){
+                block.html(json.index);
+            }
+            block.attr("class", "block type_"+json.type);
+        }
+
+        function updateWithWebSocket(x,y){
+            obj = new Object();
+            obj.x = x;
+            obj.y = y;
+            websocket.send(JSON.stringify(obj));
+        }
 
         function draw(block){
             if(block_index != -1){
@@ -44,12 +67,14 @@
 
                         x1 = block.offset().left+block.width()/2;
                         y1 = block.offset().top+block.height()/2;
+                        updateWithWebSocket(x,y);
                     }
                 });
             }else if(block_index != -1 && block.hasClass("type_"+GATE)){
                 jsRoutes.controllers.Editor.setIndex(x, y, block_index).ajax({
                     success: function(data) {
                         block.html(block_index);
+                        updateWithWebSocket(x,y);
                     }
                 });
             }
@@ -68,6 +93,7 @@
                         var type = data;
                         button.attr("class", "block type_"+type);
                         block_index = -1;
+                        updateWithWebSocket(x,y);
                         if(type == GATE){
                             button.mouseover(function(event){
                                 draw($(this));

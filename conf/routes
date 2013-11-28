@@ -16,6 +16,7 @@ GET         /addColumns                       controllers.Editor.addColumns(amou
 GET         /removeColumns                    controllers.Editor.removeColumns(amount:Int)
 GET         /getIndex                         controllers.Editor.getIndex(x:Int,y:Int)
 GET         /setIndex                         controllers.Editor.setIndex(x:Int,y:Int,index:Int)
+GET         /establishWS                      controllers.Editor.establishWebSocket()
 
 GET         /contact                          controllers.Application.contact()
 

@@ -4,9 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.BlockButtonInterface;
 import models.implementation.BlockButton;
 
@@ -16,6 +19,10 @@ import play.mvc.Controller;
 import play.mvc.Http.MultipartFormData;
 import play.mvc.Http.MultipartFormData.FilePart;
 import play.mvc.Result;
+import play.mvc.*;
+import play.libs.F.Callback;
+import play.libs.F.Callback0;
+import play.libs.Json;
 
 import de.htwg.project42.model.GameObjects.BlockInterface;
 import de.htwg.project42.model.GameObjects.LevelLoaderInterface;
@@ -23,6 +30,43 @@ import de.htwg.project42.model.GameObjects.Implementation.LevelLoader;
 
 public class Editor extends Controller {
     public static int WIDTH = 15, HEIGHT = 10, INDEX_OFFSET = 100;
+    public static List<WebSocket.Out<String>> webSockets = new LinkedList<WebSocket.Out<String>>();
+
+    public static WebSocket<String> establishWebSocket() {
+        return new WebSocket<String>() {
+            public void onReady(final WebSocket.In<String> in, final WebSocket.Out<String> out) {
+                webSockets.add(out);
+
+                in.onMessage(new Callback<String>() {
+                    public void invoke(String event) {
+                        JsonNode json = Json.parse(event);
+                        int x = json.get("x").asInt();
+                        int y = json.get("y").asInt();
+                        List<BlockButtonInterface[]> map = (List)Cache.get("map");
+
+                        Map<String, Object> objects = new HashMap<String, Object>();
+                        objects.put("x",x);
+                        objects.put("y",y);
+                        objects.put("type",map.get(x)[y].getType());
+                        objects.put("index",map.get(x)[y].getIndex());
+
+                        json = Json.toJson(objects);
+                        for(WebSocket.Out<String> o:webSockets){
+                            if(out != o){
+                                o.write(json.toString());
+                            }
+                        }
+                    }
+                });
+
+                in.onClose(new Callback0() {
+                    public void invoke() {
+                        webSockets.remove(out);
+                    }
+                });
+            }
+        };
+    }
 
     public static Result new_level(){
         LinkedList<BlockButtonInterface[]> map = new LinkedList<BlockButtonInterface[]>();

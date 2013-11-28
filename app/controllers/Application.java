@@ -22,7 +22,8 @@ public class Application extends Controller {
                         controllers.routes.javascript.Editor.changeBlockType(),
                         controllers.routes.javascript.Editor.changeToolType(),
                         controllers.routes.javascript.Editor.addColumns(),
-                        controllers.routes.javascript.Editor.removeColumns()
+                        controllers.routes.javascript.Editor.removeColumns(),
+                        controllers.routes.javascript.Editor.establishWebSocket()
                 )
         );
     }
