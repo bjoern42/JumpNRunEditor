@@ -6,8 +6,8 @@
         var GATE = 8;
         var BUTTON = 7;
 
-        var tool_type = @{session().get("tool_type")};
-        var index = @{index};
+        var tool_type = @{if(session().get("tool_type") != null) session().get("tool_type") else 0 };
+        var index = @{if(index != null) index else 0};
         var block_index = -1;
 
         var x1,y1;
