@@ -16,9 +16,12 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <button type="button" class="btn btn-default navbar-btn" onclick="newLevel()">New</button>
-                <button type="button" class="btn btn-default navbar-btn" onclick="uploadLevel()">Upload</button>
-                <button type="button" class="btn btn-default navbar-btn" onclick="downloadLevel()">Download</button>
+                @if(session().get("user") != null){
+                    <button type="button" class="btn btn-default navbar-btn" onclick="newLevel()">New</button>
+                    <button type="button" class="btn btn-default navbar-btn" onclick="uploadLevel()">Upload</button>
+                    <button type="button" class="btn btn-default navbar-btn" onclick="downloadLevel()">Download</button>
+                    <button type="button" class="btn btn-default navbar-btn" onclick="logout()">Logout</button>
+                }
             </ul>
         </div>
     </div>

@@ -1,0 +1,29 @@
+@(form: Form[models.implementation.Login])
+
+@scripts = {};
+
+@main("Login", scripts){
+    @helper.form(routes.Application.authenticate) {
+        <h1>Sign in</h1>
+
+        @if(form.hasGlobalErrors) {
+            <p class="error">
+                @form.globalError.message
+            </p>
+        }
+
+        <p>
+            <input type="user" name="user" placeholder="User" value="@form("user").value">
+        </p>
+        <p>
+            <input type="password" name="password" placeholder="Password">
+        </p>
+        <p>
+            <button type="submit">Login</button>
+        </p>
+    }
+
+    <header>
+        <a href="@routes.Application.index">home</a>
+    </header>
+}

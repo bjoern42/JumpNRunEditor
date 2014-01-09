@@ -2,7 +2,10 @@ package controllers;
 
 import play.*;
 import play.mvc.*;
-
+import play.data.*;
+import static play.data.Form.*;
+import models.implementation.Login;
+import models.implementation.User;
 
 public class Application extends Controller {
 
@@ -23,7 +26,8 @@ public class Application extends Controller {
                         controllers.routes.javascript.Editor.changeToolType(),
                         controllers.routes.javascript.Editor.addColumns(),
                         controllers.routes.javascript.Editor.removeColumns(),
-                        controllers.routes.javascript.Editor.establishWebSocket()
+                        controllers.routes.javascript.Editor.establishWebSocket(),
+                        controllers.routes.javascript.Application.logout()
                 )
         );
     }
@@ -31,4 +35,28 @@ public class Application extends Controller {
     public static Result contact(){
         return ok(views.html.contact.render());
     }
+
+    public static Result login(){
+        return ok( views.html.login.render(form(Login.class)));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result logout(){
+        session().clear();
+        return ok(views.html.logout.render());
+    }
+
+    public static Result authenticate(){
+        Form<Login> loginForm = form(Login.class).bindFromRequest("user", "password");
+
+        if(loginForm.hasErrors()){
+            return badRequest(views.html.login.render(loginForm));
+        }else{
+            session().clear();
+            session("user", loginForm.get().user);
+            return redirect(routes.Application.index());
+        }
+    }
+
+
 }

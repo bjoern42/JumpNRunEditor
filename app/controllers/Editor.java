@@ -32,6 +32,7 @@ public class Editor extends Controller {
     public static int WIDTH = 15, HEIGHT = 10, INDEX_OFFSET = 100;
     public static List<WebSocket.Out<String>> webSockets = new LinkedList<WebSocket.Out<String>>();
 
+    @Security.Authenticated(Secured.class)
     public static WebSocket<String> establishWebSocket() {
         return new WebSocket<String>() {
             public void onReady(final WebSocket.In<String> in, final WebSocket.Out<String> out) {
@@ -68,6 +69,7 @@ public class Editor extends Controller {
         };
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result new_level(){
         LinkedList<BlockButtonInterface[]> map = new LinkedList<BlockButtonInterface[]>();
         for(int i=0; i<WIDTH; i++){
@@ -83,6 +85,7 @@ public class Editor extends Controller {
         return redirect(routes.Editor.show(0));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result upload() {
         session("tool_type", String.valueOf(0));
         MultipartFormData body = request().body().asMultipartFormData();
@@ -98,6 +101,7 @@ public class Editor extends Controller {
         return redirect(routes.Editor.new_level());
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result download(){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         try{
@@ -110,6 +114,7 @@ public class Editor extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result show(int pIndex){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
 
@@ -125,12 +130,14 @@ public class Editor extends Controller {
         return ok(views.html.show.render(map.subList(pIndex, pIndex + WIDTH), HEIGHT, pIndex));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result changeBlockType(int x, int y, int type){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         map.get(x)[y].setType(type);
         return ok(""+type);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result getIndex(int x, int y){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         int index = map.get(x)[y].getIndex();
@@ -141,6 +148,7 @@ public class Editor extends Controller {
         return ok(""+index);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result setIndex(int x, int y, int index){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         if(map.get(x)[y].getType() == BlockInterface.TYP_GATE){
@@ -151,11 +159,13 @@ public class Editor extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result changeToolType(int type){
         session("tool_type", String.valueOf(type));
         return ok(""+type);
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result addColumns(int amount){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         for(int i=0; i<amount; i++){
@@ -168,6 +178,7 @@ public class Editor extends Controller {
         return ok(String.valueOf(map.size()));
     }
 
+    @Security.Authenticated(Secured.class)
     public static Result removeColumns(int amount){
         List<BlockButtonInterface[]> map = (List)Cache.get("map");
         for(int i=0; i<amount; i++){

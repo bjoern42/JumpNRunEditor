@@ -19,6 +19,9 @@ GET         /setIndex                         controllers.Editor.setIndex(x:Int,
 GET         /establishWS                      controllers.Editor.establishWebSocket()
 
 GET         /contact                          controllers.Application.contact()
+GET         /login                            controllers.Application.login()
+POST        /login                            controllers.Application.authenticate()
+GET         /logout                           controllers.Application.logout()
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/javascripts/routes        controllers.Application.javascriptRoutes()

@@ -33,6 +33,11 @@ function uploadLevel(){
     });
 }
 
+function logout(){
+    var url = jsRoutes.controllers.Application.logout().url;
+    window.location = url;
+}
+
 function downloadLevel(){
     var url = jsRoutes.controllers.Editor.download().url;
     window.location = url;
