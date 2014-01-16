@@ -1,6 +1,8 @@
+@(users: java.util.List[String])
+
 @scripts = {};
 
-@main("Logout", scripts){
+@main("Logout", users, scripts){
     Successfully loged out!
     <header>
         <a href="@routes.Application.index">home</a>

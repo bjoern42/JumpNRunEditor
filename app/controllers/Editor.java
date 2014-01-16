@@ -127,7 +127,7 @@ public class Editor extends Controller {
         if(pIndex+WIDTH > map.size()-1){
             pIndex = map.size()-WIDTH;
         }
-        return ok(views.html.show.render(map.subList(pIndex, pIndex + WIDTH), HEIGHT, pIndex));
+        return ok(views.html.show.render(map.subList(pIndex, pIndex + WIDTH), HEIGHT, pIndex, Application.getUsers()));
     }
 
     @Security.Authenticated(Secured.class)

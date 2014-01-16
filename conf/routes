@@ -23,6 +23,10 @@ GET         /login                            controllers.Application.login()
 POST        /login                            controllers.Application.authenticate()
 GET         /logout                           controllers.Application.logout()
 
+GET         /openID/auth                      controllers.Application.auth()
+GET         /openID/verify                    @controllers.Application.verify()
+
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/javascripts/routes        controllers.Application.javascriptRoutes()
 GET         /assets/*file                     controllers.Assets.at(path="/public", file)

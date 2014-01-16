@@ -1,8 +1,8 @@
-@(form: Form[models.implementation.Login])
+@(form: Form[models.implementation.Login])(users: java.util.List[String])
 
 @scripts = {};
 
-@main("Login", scripts){
+@main("Login", users, scripts){
     @helper.form(routes.Application.authenticate) {
         <h1>Sign in</h1>
 
@@ -13,13 +13,19 @@
         }
 
         <p>
-            <input type="user" name="user" placeholder="User" value="@form("user").value">
+            <input type="text" name="user" placeholder="User" value="@form("user").value">
         </p>
         <p>
             <input type="password" name="password" placeholder="Password">
         </p>
         <p>
             <button type="submit">Login</button>
+        </p>
+    }
+
+    @helper.form(routes.Application.auth) {
+        <p>
+            <button id="google_sign_in" type="submit"></button>
         </p>
     }
 

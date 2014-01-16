@@ -1,4 +1,4 @@
-@(map: java.util.List[Array[models.BlockButtonInterface]])(height:Integer)(index:Integer)
+@(map: java.util.List[Array[models.BlockButtonInterface]])(height:Integer)(index:Integer)(users: java.util.List[String])
 
 @scripts = {
     <script type="text/javascript">
@@ -185,7 +185,7 @@
         }
     </script>
 }
-@main("Level Editor", scripts) {
+@main("Level Editor", users, scripts) {
     <div>
         <div class="row">
             <div style="display: inline-table">

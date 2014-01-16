@@ -1,4 +1,4 @@
-@(title: String, scripts: Html = Html(""))(content: Html)
+@(title: String, users: java.util.List[String], scripts: Html = Html(""))(content: Html)
 
 <!DOCTYPE html>
 
@@ -20,10 +20,20 @@
     </head>
     <body>
         @navbar()
-        <div id="container">
-            <div class="jumbotron">
+        <div class="jumbotron">
+            <div id="container">
                 @content
             </div>
+            @if(users != null){
+                <div id="user_box">
+                    <p>Logged in users:</p>
+                    <ul>
+                        @for( user <- users ){
+                            <li>@user</li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
     </body>
 </html>
